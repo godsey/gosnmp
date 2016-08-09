@@ -210,7 +210,10 @@ func (x *GoSNMP) Connect() error {
 	// msgID INTEGER (0..2147483647)
 	x.msgID = uint32(x.random.Int31())
 	// RequestID is Integer32 from SNMPV2-SMI and uses all 32 bits
-	x.requestID = x.random.Uint32()
+	//x.requestID = x.random.Uint32()
+	// Some of our vendors seem to use 64bit unsigned counters so when a - number is used, it wraps to a very large 64bit number
+	// limiting to the same range as positive 31bit number of msgID resolves this issue.
+	x.requestID = uint32(x.random.Int31())
 
 	x.rxBuf = new([rxBufSize]byte)
 
